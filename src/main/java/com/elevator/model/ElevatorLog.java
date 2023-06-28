@@ -11,6 +11,7 @@ import java.util.UUID;
 @Entity
 @SQLDelete(sql = "UPDATE TBELEVATORLOG SET status=false WHERE id=?")
 @Table(name = "TBELEVATORLOG")
+@Data
 public class ElevatorLog {
     @Id
     @Column(name = "id", columnDefinition = "BINARY(16)")
