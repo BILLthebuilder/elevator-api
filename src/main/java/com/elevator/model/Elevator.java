@@ -1,11 +1,15 @@
 package com.elevator.model;
 
 
+import com.elevator.Enum.Direction;
+import com.elevator.Enum.State;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.SQLDelete;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
@@ -28,11 +32,12 @@ public class Elevator {
             }
     )
     private UUID id;
-
-    private int currentFloor;
     private int destinationFloor;
-    private String state;
-    private String direction;
+    private int currentFloor = destinationFloor-1;
+    private State state = State.IDLE;
+    private Direction direction = Direction.UP;
+
+    private ArrayList<Building> building;
 
     @Column(name = "date_created", updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     @Temporal(value = TemporalType.TIMESTAMP)

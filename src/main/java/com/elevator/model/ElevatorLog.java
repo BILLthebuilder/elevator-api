@@ -1,5 +1,6 @@
 package com.elevator.model;
 
+import com.elevator.Enum.State;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -30,7 +31,7 @@ public class ElevatorLog {
 
     private String elevatorId;
     private String place;
-    private String state;
+    private State state;
     private String direction;
 
     @Column(name = "date_created", updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")

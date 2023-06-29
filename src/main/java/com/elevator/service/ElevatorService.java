@@ -1,5 +1,6 @@
 package com.elevator.service;
 
+import com.elevator.Enum.State;
 import com.elevator.dto.ElevatorStatus;
 import com.elevator.model.Elevator;
 import com.elevator.model.ElevatorLog;
@@ -29,16 +30,17 @@ public class ElevatorService {
         var elevator = new Elevator();
         // Save the elevator log
         var log = new ElevatorLog();
-        log.setElevatorId(elevator.getId().toString());
-        log.setPlace("Elevator " + elevator.getId());
+        var elevatorIdentifier = elevator.getId().toString();
+        log.setElevatorId(elevatorIdentifier);
+        log.setPlace("Elevator "+elevatorIdentifier + elevator.getCurrentFloor());
         log.setState(elevator.getState());
         log.setDirection(elevator.getDirection());
         elevatorLogRepository.save(log);
     }
 
-    public ElevatorStatus getElevatorStatus() {
-        // Logic to get the real-time elevator status
-        var elevatorStatus = new ElevatorStatus("","","","");
-        return elevatorStatus;
+    public State getElevatorStatus() {
+        //Set elevator state from another place
+        var stopped = State.STOPPED;
+        return stopped;
     }
 }
