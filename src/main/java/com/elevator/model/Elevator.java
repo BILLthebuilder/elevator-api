@@ -19,7 +19,7 @@ import java.util.UUID;
 @Table(name = "TBELEVATOR")
 public class Elevator {
     @Id
-    @Column(name = "id", columnDefinition = "BINARY(16)")
+    @Column(columnDefinition = "BINARY(16)")
     @GeneratedValue(generator = "custom-uuid")
     @GenericGenerator(
             name = "custom-uuid",
@@ -37,7 +37,9 @@ public class Elevator {
     private State state = State.IDLE;
     private Direction direction = Direction.UP;
 
-    private ArrayList<Building> building;
+    @OneToOne
+    @JoinColumn(name = "building_id")
+    private Building building;
 
     @Column(name = "date_created", updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     @Temporal(value = TemporalType.TIMESTAMP)

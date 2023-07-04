@@ -1,5 +1,6 @@
 package com.elevator.model;
 
+import com.elevator.Enum.Direction;
 import com.elevator.Enum.State;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @Data
 public class ElevatorLog {
     @Id
-    @Column(name = "id", columnDefinition = "BINARY(16)")
+    @Column(columnDefinition = "BINARY(16)")
     @GeneratedValue(generator = "custom-uuid")
     @GenericGenerator(
             name = "custom-uuid",
@@ -29,10 +30,9 @@ public class ElevatorLog {
     )
     private UUID id;
 
-    private String elevatorId;
     private String place;
     private State state;
-    private String direction;
+    private Direction direction;
 
     @Column(name = "date_created", updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     @Temporal(value = TemporalType.TIMESTAMP)

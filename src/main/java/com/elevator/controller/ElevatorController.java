@@ -14,10 +14,10 @@ public class ElevatorController {
     private final ElevatorService elevatorService;
 
 
-    @PostMapping("/call")
-    public void callElevator(@RequestParam int fromFloor, @RequestParam int toFloor) {
-        elevatorService.callElevator(fromFloor, toFloor);
-    }
+//    @PostMapping("/call")
+//    public void callElevator(@RequestParam int fromFloor, @RequestParam int toFloor) {
+//        elevatorService.callElevator(fromFloor, toFloor);
+//    }
 
     @GetMapping("/status")
     public State getElevatorStatus() {
