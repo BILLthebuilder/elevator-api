@@ -4,7 +4,9 @@ import com.elevator.Enum.ElevatorDirection;
 import com.elevator.Enum.ElevatorState;
 import com.elevator.model.Building;
 import com.elevator.model.Elevator;
+import com.elevator.model.ElevatorLog;
 import com.elevator.repository.BuildingRepository;
+import com.elevator.repository.ElevatorLogRepository;
 import com.elevator.repository.ElevatorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
@@ -30,6 +34,12 @@ public class ElevatorService {
 
     private final ElevatorRepository elevatorRepository;
 
+    private final ElevatorLogRepository elevatorLogRepository;
+
+    private final ElevatorLog elevatorLog;
+
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+
     @Transactional
     public void callElevator(int fromFloor, int toFloor) {
        Optional<Elevator> elevator = findNearestElevator(fromFloor);
@@ -44,10 +54,14 @@ public class ElevatorService {
                 scheduleElevatorMovement(elevator);
             }
         }
+        elevatorLog.setElevatorState(elevator.get().getElevatorState());
+        elevatorLog.setElevatordirection(elevator.get().getElevatordirection());
+        elevatorLog.setPlace(elevator.get().getCurrentFloor());
+        elevatorLogRepository.save(elevatorLog);
     }
 
-    public Elevator getElevatorInfo(UUID buildingId) {
-       return  elevatorRepository.findById(buildingId);
+    public Elevator getElevatorInfo(UUID elevatorID) {
+       return  elevatorRepository.findById(elevatorID);
     }
 
     public void openElevatorDoors(UUID elevatorId) {
@@ -58,16 +72,27 @@ public class ElevatorService {
                 .findFirst();
         if (elevator.isPresent() && elevator.get().getElevatorState() == ElevatorState.MOVING) {
             // Stop the elevator
+            log.info("opening------"+dateFormat.format(new Date())+"------------");
             elevator.get().setElevatorState(ElevatorState.STOPPED);
             // Schedule a task to close the doors after 2 seconds
             executorService.schedule(() -> closeElevatorDoors(elevator), 2, TimeUnit.SECONDS);
+            log.info("closed------"+dateFormat.format(new Date())+"------------");
         }
+        elevatorLog.setElevatorState(elevator.get().getElevatorState());
+        elevatorLog.setElevatordirection(elevator.get().getElevatordirection());
+        elevatorLog.setPlace(elevator.get().getCurrentFloor());
+        elevatorLogRepository.save(elevatorLog);
     }
 
-    private void closeElevatorDoors(Optional<Elevator> elevator) {
+    public void closeElevatorDoors(Optional<Elevator> elevator) {
         elevator.get().setElevatorState(ElevatorState.MOVING);
         // Resume elevator movement
         scheduleElevatorMovement(elevator);
+
+        elevatorLog.setElevatorState(elevator.get().getElevatorState());
+        elevatorLog.setElevatordirection(elevator.get().getElevatordirection());
+        elevatorLog.setPlace(elevator.get().getCurrentFloor());
+        elevatorLogRepository.save(elevatorLog);
     }
 
     private Optional<Elevator> findNearestElevator(int floor) {
@@ -103,6 +128,11 @@ public class ElevatorService {
         }
 
         elevator.get().setElevatorState(ElevatorState.IDLE);
+
+        elevatorLog.setElevatorState(elevator.get().getElevatorState());
+        elevatorLog.setElevatordirection(elevator.get().getElevatordirection());
+        elevatorLog.setPlace(elevator.get().getCurrentFloor());
+        elevatorLogRepository.save(elevatorLog);
     }
 
     public boolean buildingExists(UUID id) {
