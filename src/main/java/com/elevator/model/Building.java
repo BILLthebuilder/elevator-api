@@ -8,6 +8,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.type.SqlTypes;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -33,9 +34,8 @@ public class Building {
     private int floors;
 
 
-    @OneToOne(mappedBy = "building")
-    private Elevator elevator;
-
+    @OneToMany(mappedBy = "building", cascade = CascadeType.ALL)
+    private List<Elevator> elevators;
 
     @Column(name = "date_created", updatable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     @Temporal(value = TemporalType.TIMESTAMP)
