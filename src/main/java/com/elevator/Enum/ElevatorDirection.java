@@ -1,5 +1,5 @@
 package com.elevator.Enum;
 
-public enum Direction {
+public enum ElevatorDirection {
     UP,DOWN
 }

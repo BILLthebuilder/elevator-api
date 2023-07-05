@@ -1,5 +1,5 @@
 package com.elevator.Enum;
 
-public enum State {
+public enum ElevatorState {
     MOVING, STOPPED, IDLE
 }
