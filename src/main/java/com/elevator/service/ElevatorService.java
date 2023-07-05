@@ -8,6 +8,7 @@ import com.elevator.model.ElevatorLog;
 import com.elevator.repository.BuildingRepository;
 import com.elevator.repository.ElevatorLogRepository;
 import com.elevator.repository.ElevatorRepository;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,16 +20,16 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Slf4j
 @Service
 public class ElevatorService {
-
-    private final ScheduledExecutorService executorService;
 
     private final BuildingRepository buildingRepository;
 
@@ -36,13 +37,14 @@ public class ElevatorService {
 
     private final ElevatorLogRepository elevatorLogRepository;
 
-    private final ElevatorLog elevatorLog;
+
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     @Transactional
     public void callElevator(int fromFloor, int toFloor) {
        Optional<Elevator> elevator = findNearestElevator(fromFloor);
+        ElevatorLog elevatorLog = new ElevatorLog();
         if (elevator.isPresent()) {
             elevator.get().setTargetFloor(toFloor);
             if (elevator.get().getCurrentFloor() < toFloor) {
@@ -66,7 +68,8 @@ public class ElevatorService {
 
     public void openElevatorDoors(UUID elevatorId) {
         var building = new Building();
-
+        ElevatorLog elevatorLog = new ElevatorLog();
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         Optional<Elevator> elevator = building.getElevators().stream()
                 .filter(ev -> ev.getId().equals(elevatorId))
                 .findFirst();
@@ -85,6 +88,7 @@ public class ElevatorService {
     }
 
     public void closeElevatorDoors(Optional<Elevator> elevator) {
+        ElevatorLog elevatorLog = new ElevatorLog();
         elevator.get().setElevatorState(ElevatorState.MOVING);
         // Resume elevator movement
         scheduleElevatorMovement(elevator);
@@ -105,11 +109,12 @@ public class ElevatorService {
     }
 
     private void scheduleElevatorMovement(Optional<Elevator> elevator) {
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.schedule(() -> moveElevator(elevator), 5, TimeUnit.SECONDS);
     }
 
     private void moveElevator(Optional<Elevator> elevator) {
-
+        ElevatorLog elevatorLog = new ElevatorLog();
         int currentFloor = elevator.get().getCurrentFloor();
         int targetFloor = elevator.get().getTargetFloor();
 
