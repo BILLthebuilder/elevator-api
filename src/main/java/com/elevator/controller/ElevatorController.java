@@ -19,12 +19,7 @@ import com.elevator.model.Elevator;
 @RequestMapping("/api/v1/elevator")
 @RequiredArgsConstructor
 public class ElevatorController {
-    private final Building building;
-    private final ScheduledExecutorService executorService;
-
     private final ElevatorService elevatorService;
-
-
     @PostMapping("/call")
     public ResponseEntity<String> callElevator(@RequestParam int fromFloor, @RequestParam int toFloor) {
        elevatorService.callElevator(fromFloor,toFloor);
