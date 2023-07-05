@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.*;
 
@@ -25,40 +27,28 @@ public class ElevatorController {
 
     @PostMapping("/call")
     public ResponseEntity<String> callElevator(@RequestParam int fromFloor, @RequestParam int toFloor) {
-        // Logic to call the elevator from a floor to another floor
-        // Update elevator's target floor, state, and direction
-        // Schedule a task to move the elevator
-
+       elevatorService.callElevator(fromFloor,toFloor);
         return ResponseEntity.ok("Elevator called from floor " + fromFloor + " to floor " + toFloor);
     }
 
     @GetMapping("/info")
-    public ResponseEntity<Elevator> getElevatorInfo(@RequestParam String elevatorId) {
+    public ResponseEntity<Elevator> getElevatorInfo(@RequestParam UUID elevatorId) {
         // Logic to get real-time information about the elevator
         // Retrieve the elevator object by ID
-        var elevator = new Elevator();
+        var elevator = elevatorService.getElevatorInfo(elevatorId);
         return ResponseEntity.ok(elevator);
     }
 
     @PostMapping("/doors/open")
-    public ResponseEntity<String> openElevatorDoors(@RequestParam String elevatorId) {
+    public ResponseEntity<String> openElevatorDoors(@RequestParam UUID elevatorId) {
         // Logic to open the elevator doors
-
-        return ResponseEntity.ok("Elevator doors opened");
+        elevatorService.openElevatorDoors(elevatorId);
+        return ResponseEntity.ok("Elevator doors will be open for two seconds");
     }
 
     @PostMapping("/doors/close")
-    public ResponseEntity<String> closeElevatorDoors(@RequestParam String elevatorId) {
-        // Logic to close the elevator doors
-
+    public ResponseEntity<String> closeElevatorDoors(@RequestParam Elevator elevator) {
+        elevatorService.closeElevatorDoors(Optional.of(elevator));
         return ResponseEntity.ok("Elevator doors closed");
-    }
-
-    // Task to simulate elevator movement
-    @Scheduled(fixedRate = 5000) // Execute every 5 seconds
-    public void moveElevator() {
-        // Logic to update elevator's current floor, state, and direction
-        // Check if the elevator has reached its target floor
-        // If so, update state and direction accordingly
     }
 }
