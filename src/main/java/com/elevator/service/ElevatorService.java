@@ -1,6 +1,6 @@
 package com.elevator.service;
 
-import com.elevator.Enum.Direction;
+import com.elevator.Enum.ElevatorDirection;
 import com.elevator.Enum.ElevatorState;
 import com.elevator.model.Building;
 import com.elevator.model.Elevator;
@@ -36,9 +36,9 @@ public class ElevatorService {
         if (elevator.isPresent()) {
             elevator.get().setTargetFloor(toFloor);
             if (elevator.get().getCurrentFloor() < toFloor) {
-                elevator.get().setDirection(Direction.UP);
+                elevator.get().setElevatordirection(ElevatorDirection.UP);
             } else {
-                elevator.get().setDirection(Direction.DOWN);
+                elevator.get().setElevatordirection(ElevatorDirection.DOWN);
             }
             if (elevator.get().getElevatorState() == ElevatorState.IDLE) {
                 scheduleElevatorMovement(elevator);
@@ -90,13 +90,13 @@ public class ElevatorService {
 
         if (currentFloor < targetFloor) {
             elevator.get().setElevatorState(ElevatorState.MOVING);
-            elevator.get().setDirection(Direction.UP);
+            elevator.get().setElevatordirection(ElevatorDirection.UP);
             for (int floor = currentFloor + 1; floor <= targetFloor; floor++) {
                 elevator.get().setCurrentFloor(floor);
             }
         } else if (currentFloor > targetFloor) {
             elevator.get().setElevatorState(ElevatorState.MOVING);
-            elevator.get().setDirection(Direction.DOWN);
+            elevator.get().setElevatordirection(ElevatorDirection.DOWN);
             for (int floor = currentFloor - 1; floor >= targetFloor; floor--) {
                 elevator.get().setCurrentFloor(floor);
             }
