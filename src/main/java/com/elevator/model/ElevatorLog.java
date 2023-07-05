@@ -30,7 +30,7 @@ public class ElevatorLog {
     )
     private UUID id;
 
-    private String place;
+    private int place;
     private ElevatorState elevatorState;
     private ElevatorDirection elevatordirection;
 
